@@ -1,0 +1,507 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Assertion Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprComplex.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprFactory.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Individual.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Concept.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Assertion.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/AssertionConcept.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/ABox.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test0()
+{
+	var abox = new ABox() ;
+	
+	for( i = 0; i <= 100; i++ )
+		assertEquals(abox.newIndividual().getName(), "a" + i ) ;
+}
+
+function test1()
+{
+	// Test {C(a)}
+	var abox = new ABox() ;
+	
+	abox.addAssertion( new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ) ;
+	
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test2() 
+{
+	// Test {C(a), C(a)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var individualA = new Individual( "a" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptC, individualA ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertTrue( exprC.isAtomic() ) ;
+	assertFalse( exprC.isNegated() ) ;
+	assertTrue( conceptC.getExpr().isAtomic() ) ;
+	// Use isAtomic() directly on concept
+	assertTrue( conceptC.isAtomic() ) ;
+	assertFalse( conceptC.getExpr().isNegated() ) ;
+	// Use isNegated() directly on concept
+	assertFalse( conceptC.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test3()
+{
+	// Test {C(a), C(b)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var individualA = new Individual( "a" ) ;
+	var individualB = new Individual( "b" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptC, individualB ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertFalse( conceptC.getExpr().isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertEquals( individualB.getName(), "b" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test4()
+{
+	// Test {C(a), D(a)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprD = new ExprAtomic( "D" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptD = new Concept( exprD ) ;
+	var individualA = new Individual( "a" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptD, individualA ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertFalse( exprD.isNegated() ) ;
+	assertFalse( conceptC.getExpr().isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertFalse( conceptD.getExpr().isNegated() ) ;
+	assertFalse( conceptD.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test5()
+{
+	// Test {C(a), D(b)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprD = new ExprAtomic( "D" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptD = new Concept( exprD ) ;
+	var individualA = new Individual( "a" ) ;
+	var individualB = new Individual( "b" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptD, individualB ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertFalse( exprD.isNegated() ) ;
+	assertFalse( conceptC.getExpr().isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertFalse( conceptD.getExpr().isNegated() ) ;
+	assertFalse( conceptD.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertEquals( individualB.getName(), "b" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test6()
+{
+	// Test {C(a), not C(b)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprNotC = new ExprAtomic( NEG + "C" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptNotC = new Concept( exprNotC ) ;
+	var individualA = new Individual( "a" ) ;
+	var individualB = new Individual( "b" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptNotC, individualB ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertTrue( exprNotC.isNegated() ) ;
+	assertFalse( conceptC.getExpr().isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertTrue( conceptNotC.getExpr().isNegated() ) ;
+	assertTrue( conceptNotC.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertEquals( individualB.getName(), "b" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test7()
+{
+	// Test {C(a), not D(a)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprNotD = new ExprAtomic( NEG + "D" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptNotD = new Concept( exprNotD ) ;
+	var individualA = new Individual( "a" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptNotD, individualA ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertTrue( conceptNotD.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test8()
+{
+	// Test {C(a), not D(b)}
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprNotD = new ExprAtomic( NEG + "D" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptNotD = new Concept( exprNotD ) ;
+	var individualA = new Individual( "a" ) ;
+	var individualB = new Individual( "b" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptNotD, individualB ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertTrue( exprNotD.isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertTrue( conceptNotD.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	assertEquals( individualB.getName(), "b" ) ;
+	assertTrue( abox.isConsistent() ) ;
+	
+}
+
+function test9()
+{
+	// Test {C(a), not C(a)} => INCONSISTENT
+	var abox = new ABox() ;
+	var exprC = new ExprAtomic( "C" ) ;
+	var exprNotC = new ExprAtomic( NEG + "C" ) ;
+	var conceptC = new Concept( exprC ) ;
+	var conceptNotC = new Concept( exprNotC ) ;
+	var individualA = new Individual( "a" ) ;
+	var assertion1 = new AssertionConcept( conceptC, individualA ) ;
+	var assertion2 = new AssertionConcept( conceptNotC, individualA ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	
+	assertFalse( exprC.isNegated() ) ;
+	assertTrue( exprNotC.isNegated() ) ;
+	assertFalse( conceptC.isNegated() ) ;
+	assertTrue( conceptNotC.isNegated() ) ;
+	assertEquals( individualA.getName(), "a" ) ;
+	// INCONSISTENT
+	assertFalse( abox.isConsistent() ) ;
+}
+
+function test10()
+{
+	// Test {C(a), not D(a), D(b)}
+	var abox = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( "D" ) ), new Individual( "b" ) ) ;
+
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	abox.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test11()
+{
+	// Test {C(a), not D(a), D(b), D(a)} => INCONSISTENT
+	var abox = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( "D" ) ), new Individual( "b" ) ) ;
+	var assertion4 = new AssertionConcept( new Concept( new ExprAtomic( "D" ) ), new Individual( "a" ) ) ;
+	
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	abox.addAssertion( assertion3 ) ;
+	abox.addAssertion( assertion4 ) ;
+	
+	assertFalse( abox.isConsistent() ) ;
+}
+
+function test12()
+{
+	// Test {(C and D)(a) , C(a), D(a) }
+	var abox = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " D)" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( "D" ) ), new Individual( "a" ) ) ;
+
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	abox.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test13()
+{
+	// Test {(C and not C)(a) , C(a), not C(a) } => INCONSISTENT
+	var abox = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "C )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "C" ) ), new Individual( "a" ) ) ;
+
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	abox.addAssertion( assertion3 ) ;
+
+	assertFalse( abox.isConsistent() ) ;
+}
+
+function test14()
+{
+	// Test {(C and not D)(a) , C(a), not D(a) }
+	var abox = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+
+	abox.addAssertion( assertion1 ) ;
+	abox.addAssertion( assertion2 ) ;
+	abox.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox.isConsistent() ) ;
+}
+
+function test15()
+{
+	// Test copy method of ABox
+	var abox1 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	assertEquals( abox1.getAssertions().length, 3 ) ;
+	
+	var abox2 = abox1.copy() ;
+	
+	assertEquals( abox2.getAssertions().length, 3 ) ;
+	assertTrue( abox1.equals( abox2 ) ) ;
+}
+
+function test16()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	abox2.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox1.equals( abox2 ) ) ;
+}
+
+function test17()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion3 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	
+	assertTrue( abox1.equals( abox2 ) ) ;
+}
+
+function test18()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	
+	assertFalse( abox1.equals( abox2 ) ) ;
+}
+
+function test19()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	abox2.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox1.equals( abox2 ) ) ;
+}
+
+function test20()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	abox2.addAssertion( assertion3 ) ;
+	
+	assertTrue( abox1.equals( abox2 ) ) ;
+}
+
+function test21()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion3 ) ;
+	
+	assertFalse( abox1.equals( abox2 ) ) ;
+}
+
+function test22()
+{
+	// Test equals
+	var abox1 = new ABox() ;
+	var abox2 = new ABox() ;
+	var assertion1 = new AssertionConcept( new Concept( new ExprComplex( "(C " + SQUARE_CAP + " " + NEG + "D )" ) ), new Individual( "a" ) ) ;
+	var assertion2 = new AssertionConcept( new Concept( new ExprAtomic( "C" ) ), new Individual( "a" ) ) ;
+	var assertion3 = new AssertionConcept( new Concept( new ExprAtomic( NEG + "D" ) ), new Individual( "a" ) ) ;
+	var assertion4 = new AssertionConcept( new Concept( new ExprAtomic( "D" ) ), new Individual( "a" ) ) ;
+	
+	abox1.addAssertion( assertion1 ) ;
+	abox1.addAssertion( assertion2 ) ;
+	abox1.addAssertion( assertion3 ) ;
+	
+	abox2.addAssertion( assertion1 ) ;
+	abox2.addAssertion( assertion2 ) ;
+	abox2.addAssertion( assertion4 ) ;
+	
+	// Assertion 3 and 4 have different concepts
+	assertFalse( abox1.equals( abox2 ) ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/kb/ABox.js</h1>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test1() 
+{
+	// Test expression A
+	var expr = new ExprAtomic( "A" ) ;
+    assertEquals( expr.getName(), "A" ) ;
+    assertTrue( expr.isAtomic() ) ;
+    assertTrue( expr.isValid() ) ;
+    assertFalse( expr.isComplex() ) ;
+    assertFalse( expr.isRestriction() ) ;
+    assertFalse( expr.isNegated() ) ;
+}
+
+function test2()
+{
+	// Test negated expression �A
+	var expr = new ExprAtomic( NEG + "A" ) ;
+	assertEquals( expr.getName(), "A" ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertTrue( expr.isNegated() ) ;
+	assertTrue( expr.isValid() ) ;
+	assertFalse( expr.isComplex() ) ;
+	assertFalse( expr.isRestriction() ) ;
+}
+
+function test3()
+{
+	// Test expression Student
+	var expr = new ExprAtomic( "Student" ) ;
+	assertEquals( expr.getName(), "Student" ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertTrue( expr.isValid() ) ;
+	assertFalse( expr.isNegated() ) ;
+	assertFalse( expr.isComplex() ) ;
+	assertFalse( expr.isRestriction() ) ;
+}
+
+
+function test4()
+{
+	// Test expression �Student
+	var expr = new ExprAtomic( NEG + "Student" ) ;
+	assertEquals( expr.getName(), "Student" ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertTrue( expr.isNegated() ) ;
+	assertTrue( expr.isValid() ) ;
+	assertFalse( expr.isComplex() ) ;
+	assertFalse( expr.isRestriction() ) ;
+}
+
+function test5()
+{
+	// Test expression St0dent which is an invalid concept name (only [A-Za-z])
+	var expr = new ExprAtomic( "St0dent" ) ;
+	assertEquals( expr.getName(), "St0dent" ) ;
+	assertFalse( expr.isValid() ) ;
+	assertFalse( expr.isNegated() ) ;
+}
+
+function test6()
+{
+	// Test expression �St0dent which is an invalid concept name (only [A-Za-z])
+	var expr = new ExprAtomic( NEG + "St0dent" ) ;
+	assertEquals( expr.getName(), "St0dent" ) ;
+	assertFalse( expr.isValid() ) ;
+	assertTrue( expr.isNegated() ) ;
+}
+
+
+function test7()
+{
+	// Test equals
+	var expr1 = new ExprAtomic( NEG + "C" ) ;
+	var expr2 = new ExprAtomic( NEG + "C" ) ;
+
+ 	assertTrue( expr1.equals( expr2 ) ) ;
+}
+
+function test8()
+{
+	// Test equals
+	var expr1 = new ExprAtomic( NEG + "C" ) ;
+	var expr2 = new ExprAtomic( "C" ) ;
+	
+	assertFalse( expr1.equals( expr2 ) ) ;
+}
+
+function test9()
+{
+	// Test equals
+	var expr1 = new ExprAtomic( String.fromCharCode( NEG ) + "C" ) ;
+	var expr2 = new ExprAtomic( String.fromCharCode( NEG ) + "D" ) ;
+
+	assertFalse( expr1.equals( expr2 ) ) ;
+}
+
+function test10()
+{
+	// Test toString()
+	var str = String.fromCharCode( NEG ) + "C" ;
+	var expr = new ExprAtomic( str ) ;
+	
+	assertTrue( expr.toString() == str ) ;
+}
+
+function test11()
+{
+	// Test toString()
+	var str1 = "C" ;
+	var str2 = String.fromCharCode( NEG ) + "C" ;
+	var expr = new ExprAtomic( str1 ) ;
+	
+	assertFalse( expr.toString() == str2 ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/expr/ExprAtomic.js</h1>
+</body>
+</html>

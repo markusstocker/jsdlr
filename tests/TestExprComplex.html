@@ -1,0 +1,406 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprFactory.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprComplex.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test1() 
+{
+	// Test expression (A and B)
+	var expr = new ExprComplex( "(A " + SQUARE_CAP + " B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertFalse( expr.isAtomic() ) ;
+	assertFalse( expr.isRestriction() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test2() 
+{
+	// Test expression (A and �B)
+	var expr = new ExprComplex( "(A " + SQUARE_CAP + " " + NEG + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test3() 
+{
+	// Test expression (�A and B)
+	var expr = new ExprComplex( "(" + NEG + "A " + SQUARE_CAP + " B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test4() 
+{
+	// Test expression (�A and �B)
+	var expr = new ExprComplex( "(" + NEG + "A " + SQUARE_CAP + " " + NEG + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test5() 
+{
+	// Test expression (AandB(
+	var expr = new ExprComplex( "(A" + SQUARE_CAP + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test6() 
+{
+	// Test expression (�Aand�B)
+	var expr = new ExprComplex( "(" + NEG + "A" + SQUARE_CAP + NEG + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test7() 
+{
+	// Test expression (�Aand�Student)
+	var expr = new ExprComplex( "(" + NEG + "A" + SQUARE_CAP + NEG  + "Student)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "Student" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test8() 
+{
+	// Test expression (�Aand�St0dent) which is invalid
+	var expr = new ExprComplex( "(" + NEG + "A" + SQUARE_CAP + NEG + "St0dent)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertFalse( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertFalse( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "St0dent" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test9() 
+{
+	// Test expression (�A and �St0dent)
+	var expr = new ExprComplex( "(" + NEG + "A " + SQUARE_CAP + " " + NEG + "St0dent)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertFalse( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+    assertTrue( left.isValid() ) ;
+    assertFalse( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "St0dent" ) ;
+    assertTrue( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test10() 
+{
+	// Test expression (A or B)
+	var expr = new ExprComplex( "(A " + SQUARE_CUP + " B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test11() 
+{
+	// Test expression (AorB)
+	var expr = new ExprComplex( "(A" + SQUARE_CUP + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test12() 
+{
+	// Test expression (Aor �B)
+	var expr = new ExprComplex( "(A" + SQUARE_CUP + " " + NEG + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertEquals( left.getName(), "A" ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( left.isNegated() ) ;
+    assertTrue( right.isNegated() ) ;
+}
+
+function test13() 
+{
+	// Test expression ((A and A) or (B and B))
+	var expr = new ExprComplex( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	var leftLeft = left.getLeft() ;
+	var rightLeft = left.getRight() ;
+	var leftRight = right.getLeft() ;
+	var rightRight = right.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertTrue( left.isComplex() ) ;
+    assertTrue( right.isComplex() ) ;
+    assertEquals( left.getOperator(), SQUARE_CAP ) ;
+    assertEquals( right.getOperator(), SQUARE_CAP ) ;
+    assertTrue( leftLeft.isValid() ) ;
+    assertTrue( leftLeft.isAtomic() ) ;
+    assertEquals( leftLeft.getName(), "A" ) ;
+    assertFalse( leftLeft.isNegated() ) ;
+    assertTrue( rightLeft.isValid() ) ;
+    assertTrue( rightLeft.isAtomic() ) ;
+    assertEquals( rightLeft.getName(), "A" ) ;
+    assertFalse( rightLeft.isNegated() ) ;
+    assertTrue( leftRight.isValid() ) ;
+    assertTrue( leftRight.isAtomic() ) ;
+    assertEquals( leftRight.getName(), "B" ) ;
+    assertFalse( leftRight.isNegated() ) ;
+    assertTrue( rightRight.isValid() ) ;
+    assertTrue( rightRight.isAtomic() ) ;
+    assertEquals( rightRight.getName(), "B" ) ;
+    assertFalse( rightRight.isNegated() ) ;
+}
+
+function test14() 
+{
+	// Test expression ((A and �A) or (B and �B))
+	var expr = new ExprComplex( "((A " + SQUARE_CAP + " " + NEG + "A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " " + NEG + "B))" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	var leftLeft = left.getLeft() ;
+	var rightLeft = left.getRight() ;
+	var leftRight = right.getLeft() ;
+	var rightRight = right.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertTrue( left.isComplex() ) ;
+    assertTrue( right.isComplex() ) ;
+    assertEquals( left.getOperator(), SQUARE_CAP ) ;
+    assertEquals( right.getOperator(), SQUARE_CAP ) ;
+    assertTrue( leftLeft.isValid() ) ;
+    assertTrue( leftLeft.isAtomic() ) ;
+    assertEquals( leftLeft.getName(), "A" ) ;
+    assertFalse( leftLeft.isNegated() ) ;
+    assertTrue( rightLeft.isValid() ) ;
+    assertTrue( rightLeft.isAtomic() ) ;
+    assertEquals( rightLeft.getName(), "A" ) ;
+    assertTrue( rightLeft.isNegated() ) ;
+    assertTrue( leftRight.isValid() ) ;
+    assertTrue( leftRight.isAtomic() ) ;
+    assertEquals( leftRight.getName(), "B" ) ;
+    assertFalse( leftRight.isNegated() ) ;
+    assertTrue( rightRight.isValid() ) ;
+    assertTrue( rightRight.isAtomic() ) ;
+    assertEquals( rightRight.getName(), "B" ) ;
+    assertTrue( rightRight.isNegated() ) ;
+}
+
+function test15() 
+{
+	// Test expression ((A and A) or B)
+	var expr = new ExprComplex( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	var leftLeft = left.getLeft() ;
+	var rightLeft = left.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+    assertTrue( left.isValid() ) ;
+    assertTrue( right.isValid() ) ;
+    assertTrue( left.isComplex() ) ;
+    assertTrue( right.isAtomic() ) ;
+    assertTrue( leftLeft.isValid() ) ;
+    assertTrue( leftLeft.isAtomic() ) ;
+    assertEquals( leftLeft.getName(), "A" ) ;
+    assertFalse( leftLeft.isNegated() ) ;
+    assertTrue( rightLeft.isValid() ) ;
+    assertTrue( rightLeft.isAtomic() ) ;
+    assertEquals( rightLeft.getName(), "A" ) ;
+    assertFalse( rightLeft.isNegated() ) ;
+    assertTrue( right.isValid() ) ;
+    assertTrue( right.isAtomic() ) ;
+    assertEquals( right.getName(), "B" ) ;
+    assertFalse( right.isNegated() ) ;
+}
+
+function test16()
+{
+	// Test equals
+	var expr1 = new ExprComplex( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " B)" ) ;
+	var expr2 = new ExprComplex( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " B)" ) ;
+
+	assertTrue( expr1.equals( expr2 ) ) ;
+}
+
+function test17()
+{
+	// Test equals
+	var expr1 = new ExprComplex( "((A " + SQUARE_CAP + " " + NEG + "A) " + SQUARE_CUP + " B)" ) ;
+	var expr2 = new ExprComplex( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " B)" ) ;
+
+	assertFalse( expr1.equals( expr2 ) ) ;
+}
+
+function test18()
+{
+	// Test toString
+	var str = "((A " + SQUARE_CAP + " " + NEG + "A) " + SQUARE_CUP + " B)" ;
+	var expr = new ExprComplex( str ) ;
+	
+	assertTrue( expr.toString() == str ) ;
+}
+
+function test19()
+{
+	// Test toString
+	var str1 = "((A " + SQUARE_CAP + " " + NEG + "A) " + SQUARE_CUP + " B)" ;
+	var str2 = "((A " + SQUARE_CAP + " " + NEG + "A) " + SQUARE_CAP + " B)" ;
+	var expr = new ExprComplex( str1 ) ;
+	
+	assertFalse( expr.toString() == str2 ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/expr/ExprComplex.js</h1>
+</body>
+</html>

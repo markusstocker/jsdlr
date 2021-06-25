@@ -1,0 +1,171 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Assertion Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprComplex.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprFactory.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Individual.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Concept.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Assertion.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/AssertionConcept.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/ABox.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/tableau/Tableau.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/tableau/Node.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/reasoner/Reasoner.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/reasoner/ALCReasoner.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test1()
+{
+	// Test A
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "A" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test2()
+{
+	// Test (A and A)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "(A " + SQUARE_CAP + " A)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test3()
+{
+	// Test (A and not A)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "(A " + SQUARE_CAP + " " + NEG + "A)" ) ) ;
+	
+	assertFalse( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test4()
+{
+	// Test (A or A)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "(A " + SQUARE_CUP + " A)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test5()
+{
+	// Test (A or not A)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "(A " + SQUARE_CUP + " " + NEG + "A)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test6()
+{
+	// Test ((A and A) or (B and B))
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test7()
+{
+	// Test ((A and B) or (notA and notB))
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + " B) " + SQUARE_CUP + " (" + NEG + "A " + SQUARE_CAP + " " + NEG + "B))" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test8()
+{
+	// Test ((A and B) and (notA and notB))
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + " B) " + SQUARE_CAP + " (" + NEG + "A " + SQUARE_CAP + " " + NEG + "B))" ) ) ;
+	
+	assertFalse( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test9()
+{
+	// Test ((A or B) and notA)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CUP + " B) " + SQUARE_CAP + NEG + "A)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test10()
+{
+	// Test ((A and B) and notA)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + " B) " + SQUARE_CAP + NEG + "A)" ) ) ;
+	
+	assertFalse( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test11()
+{
+	// Test ((A and B) or notA)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + " B) " + SQUARE_CUP + NEG + "A)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test12()
+{
+	// Test ((A and notA) or B)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + NEG + "A) " + SQUARE_CUP + " B)" ) ) ;
+	
+	assertTrue( reasoner.isSatisfiable( concept ) ) ;
+}
+
+function test13()
+{
+	// Test ((A and notA) and B)
+	var reasoner = new ALCReasoner() ;
+	var concept = new Concept( ExprFactory.prototype.create( "((A " + SQUARE_CAP + NEG + "A) " + SQUARE_CAP + " B)" ) ) ;
+	
+	assertFalse( reasoner.isSatisfiable( concept ) ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/reasoner/ALCReasoner.js</h1>
+</body>
+</html>

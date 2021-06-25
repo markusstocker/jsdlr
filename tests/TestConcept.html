@@ -1,0 +1,145 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Assertion Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprComplex.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprFactory.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/kb/Concept.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test1()
+{
+	// Test concept ( A and B )
+	var concept = new Concept( ExprFactory.prototype.create( "( A " + SQUARE_CAP + " B )" ) ) ;
+	var expr = concept.getExpr() ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertEquals( left.getName(), "A" ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertFalse( right.isNegated() ) ;
+}
+
+function test2()
+{
+	// Test concept A
+	var concept = new Concept( new ExprAtomic( "A" ) ) ;
+
+	assertTrue( concept.isValid() ) ;
+	assertTrue( concept.isAtomic() ) ;
+	assertFalse( concept.isNegated() ) ;
+}
+
+function test3()
+{
+	// Test concept not A
+	var concept = new Concept( new ExprAtomic( NEG + "A" ) ) ;
+	
+	assertTrue( concept.isValid() ) ;
+	assertTrue( concept.isAtomic() ) ;
+	assertTrue( concept.isNegated() ) ;
+}
+
+function test4()
+{
+	// Test concept (A and B)
+	var expr = ExprFactory.prototype.create( "(A" + SQUARE_CAP + "B)" ) ;
+	var concept = new Concept( expr ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( concept.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( concept.isComplex() ) ;
+	// Only atomic concepts may be negated (the machinery assumes NNF)
+	assertFalse( concept.isNegated() ) ;
+}
+
+function test5()
+{
+	// Test equals
+	var concept1 = new Concept( new ExprAtomic( "A" ) ) ;
+	var concept2 = new Concept( new ExprAtomic( "A" ) ) ;
+	
+	assertTrue( concept1.equals( concept2 ) ) ;
+}
+
+function test6()
+{
+	// Test equals
+	var concept1 = new Concept( new ExprAtomic( "A" ) ) ;
+	var concept2 = new Concept( new ExprAtomic( "B" ) ) ;
+	
+	assertFalse( concept1.equals( concept2 ) ) ;
+}
+
+function test7()
+{
+	// Test equals
+	var concept1 = new Concept( ExprFactory.prototype.create( "A" ) ) ;
+	var concept2 = new Concept( ExprFactory.prototype.create( "A" ) ) ;
+	
+	assertTrue( concept1.equals( concept2 ) ) ;
+}
+
+function test8()
+{
+	// Test equals
+	var concept1 = new Concept( ExprFactory.prototype.create( "(A" + SQUARE_CAP + "B)" ) ) ;
+	var concept2 = new Concept( ExprFactory.prototype.create( "(A" + SQUARE_CAP + "B)" ) ) ;
+	
+	assertTrue( concept1.equals( concept2 ) ) ;
+}
+
+function test9()
+{
+	// Test equals
+	var concept1 = new Concept( ExprFactory.prototype.create( "(A" + SQUARE_CAP + "B)" ) ) ;
+	var concept2 = new Concept( ExprFactory.prototype.create( "(A" + SQUARE_CAP + "A)" ) ) ;
+	
+	assertFalse( concept1.equals( concept2 ) ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/kb/Concept.js</h1>
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JsUnit Assertion Tests</title>
+<link rel="stylesheet" type="text/css" href="../lib/jsunit/css/jsUnitStyle.css">
+<script language="JavaScript" type="text/javascript" src="../src/util/DecimalCharCodeTable.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/Expr.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprAtomic.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprComplex.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprFactory.js"></script>
+<script language="JavaScript" type="text/javascript" src="../src/expr/ExprRestriction.js"></script>
+<script language="JavaScript" type="text/javascript" src="../lib/jsunit/app/jsUnitCore.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+function test1()
+{
+	// Test expression (A)
+	var expr = ExprFactory.prototype.create( "(A)" ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertFalse( expr.isNegated() ) ;
+	assertEquals( expr.getName(), "A" ) ;
+}
+
+function test2()
+{
+	// Test expression A
+	var expr = ExprFactory.prototype.create( "A" ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertFalse( expr.isNegated() ) ;
+	assertEquals( expr.getName(), "A" ) ;
+}
+
+function test3()
+{
+	// Test expression �A
+	var expr = ExprFactory.prototype.create( NEG + "A" ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertTrue( expr.isNegated() ) ;
+	assertEquals( expr.getName(), "A" ) ;
+}
+
+function test4()
+{
+	// Test expression � A
+	var expr = ExprFactory.prototype.create( NEG + " A" ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertTrue( expr.isNegated() ) ;
+	assertEquals( expr.getName(), "A" ) ;
+}
+
+function test5()
+{
+	// Test expression ( A )
+	var expr = ExprFactory.prototype.create( "( A )" ) ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isAtomic() ) ;
+	assertFalse( expr.isNegated() ) ;
+	assertEquals( expr.getName(), "A" ) ;
+}
+
+function test6()
+{
+	// Test expression A and B
+	var expr = ExprFactory.prototype.create( "A " + SQUARE_CAP + " B" ) ;
+	
+	assertFalse( expr.isValid() ) ;
+}
+
+function test7()
+{
+	// Test expression (A and B)
+	var expr = ExprFactory.prototype.create( "(A " + SQUARE_CAP + " B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( left.getName(), "A" ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertFalse( right.isNegated() ) ;
+}
+
+function test8()
+{
+	// Test expression ( A and B )
+	var expr = ExprFactory.prototype.create( "( A " + SQUARE_CAP + " B )" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( left.getName(), "A" ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertFalse( right.isNegated() ) ;
+}
+
+function test9()
+{
+	// Test expression (AandB)
+	var expr = ExprFactory.prototype.create( "(A" + SQUARE_CAP + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( left.getName(), "A" ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertFalse( right.isNegated() ) ;
+}
+
+function test10()
+{
+	// Test expression (A and �B)
+	var expr = ExprFactory.prototype.create( "(A " + SQUARE_CAP + " " + NEG + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( left.getName(), "A" ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertTrue( right.isNegated() ) ;
+}
+
+function test11()
+{
+	// Test expression (Car and �Student)
+	var expr = ExprFactory.prototype.create( "(Car " + SQUARE_CAP + " " + NEG + "Student)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( left.getName(), "Car" ) ;
+	assertEquals( right.getName(), "Student" ) ;
+	assertTrue( left.isAtomic() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertFalse( left.isNegated() ) ;
+	assertTrue( right.isNegated() ) ;
+}
+
+function test12()
+{
+	// Test expression (Car and �St0dent)
+	var expr = ExprFactory.prototype.create( "(Car " + SQUARE_CAP + " " + NEG + "St0dent)" ) ;
+	
+	assertFalse( expr.isValid() ) ;
+}
+
+function test13()
+{
+	// Test expression (A and B) and C
+	var expr = ExprFactory.prototype.create( "(A " + SQUARE_CAP + " B) " + SQUARE_CAP + " C" ) ;
+	
+	assertFalse( expr.isValid() ) ;
+}
+
+function test14()
+{
+	// Test expression ((A and B) and C)
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " B) " + SQUARE_CAP + " C)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertFalse( right.isComplex() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( right.getName(), "C" ) ;
+	assertFalse( right.isNegated() ) ;
+}
+
+function test15() 
+{
+	// Test expression ((A and A) or (B and B))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+}
+
+function test16()
+{
+	// Test equals
+	var expr1 = ExprFactory.prototype.create( "A" ) ;
+	var expr2 = ExprFactory.prototype.create( "A" ) ;
+	
+	assertTrue( expr1.equals( expr2 ) ) ;
+}
+
+function test17()
+{
+	// Test equals
+	var expr1 = ExprFactory.prototype.create( "A" ) ;
+	var expr2 = ExprFactory.prototype.create( "B" ) ;
+	
+	assertFalse( expr1.equals( expr2 ) ) ;
+}
+
+function test18()
+{
+	// Test equals
+	var expr1 = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ;
+	var expr2 = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ;
+	
+	assertTrue( expr1.equals( expr2 ) ) ;
+}
+
+function test19()
+{
+	// Test equals
+	var expr1 = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ) ;
+	var expr2 = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " D))" ) ;
+	
+	assertFalse( expr1.equals( expr2 ) ) ;
+}
+
+function test20()
+{
+	// Test toString
+	var str = "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ;
+	var expr = ExprFactory.prototype.create( str ) ;
+	
+	assertTrue( expr.toString() == str ) ;
+}
+
+function test21()
+{
+	// Test toString
+	var str1 = "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " B))" ;
+	var str2 = "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (B " + SQUARE_CAP + " " + NEG + " B))" ;
+	var expr = ExprFactory.prototype.create( str1 ) ;
+	
+	assertFalse( expr.toString() == str2 ) ;
+}
+
+function test22() 
+{
+	// Test expression ((A and A) or forAll R.C)
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + FOR_ALL + "R.C)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertEquals( right.getQuantifier(), FOR_ALL ) ;
+	assertEquals( right.getRoleName(), "R" ) ;
+	assertTrue( right.getFillerExpr().equals( ExprFactory.prototype.create( "C" ) ) ) ;
+}
+
+function test23() 
+{
+	// Test expression (((A and A) or forAll R.C) and B)
+	var expr = ExprFactory.prototype.create( "(((A " + SQUARE_CAP + " A) " + SQUARE_CUP + FOR_ALL + "R.C) " + SQUARE_CAP + "B)" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	var leftLeft = left.getLeft() ;
+	var rightLeft = left.getRight() ;
+	var leftLeftLeft = leftLeft.getLeft() ;
+	var rightLeftLeft = leftLeft.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CAP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CUP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isAtomic() ) ;
+	assertEquals( right.getName(), "B" ) ;
+	assertTrue( leftLeft.isComplex() ) ;
+	assertEquals( leftLeft.getOperator(), SQUARE_CAP ) ;
+	assertTrue( rightLeft.isRestriction() ) ;
+	assertEquals( rightLeft.getQuantifier(), FOR_ALL ) ;
+	assertEquals( rightLeft.getRoleName(), "R" ) ;
+	assertTrue( rightLeft.getFillerExpr().equals( ExprFactory.prototype.create( "C" ) ) ) ;
+	assertTrue( leftLeftLeft.isAtomic() ) ;
+	assertEquals( leftLeftLeft.getName(), "A" ) ;
+	assertTrue( rightLeftLeft.isAtomic() ) ;
+	assertEquals( rightLeftLeft.getName(), "A" ) ;
+}
+
+function test24() 
+{
+	// Test expression ((A and A) or (exists R.C and B))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (" + EXISTS + "R.C " + SQUARE_CAP + "B))" ) ;
+	var left = expr.getLeft() ;
+	var right = expr.getRight() ;
+	var leftLeft = left.getLeft() ;
+	var rightLeft = left.getRight() ;
+	var leftRight = right.getLeft() ;
+	var rightRight = right.getRight() ;
+
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CAP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+	assertEquals( right.getOperator(), SQUARE_CAP ) ;
+	assertTrue( leftLeft.isAtomic() ) ;
+	assertEquals( leftLeft.getName(), "A" ) ;
+	assertTrue( rightLeft.isAtomic() ) ;
+	assertEquals( rightLeft.getName(), "A" ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getQuantifier(), EXISTS ) ;
+	assertEquals( leftRight.getRoleName(), "R" ) ;
+	assertTrue( leftRight.getFillerExpr().equals( ExprFactory.prototype.create( "C" ) ) ) ;
+	assertTrue( rightRight.isAtomic() ) ;
+	assertEquals( rightRight.getName(), "B" ) ;
+}
+
+function test25() 
+{
+	// Test expression ((A and A) or (exists R.(C and D) and B))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (" + EXISTS + "R.(C " + SQUARE_CAP + "D)" + SQUARE_CAP + "B))" ) ;
+	var left = expr.getLeft() ; // (A and A) 
+	var right = expr.getRight() ; // (exists R.(C and D) and B)
+	var leftLeft = left.getLeft() ; // A
+	var rightLeft = left.getRight() ; // A
+	var leftRight = right.getLeft() ; // exists R.(C and D)
+	var rightRight = right.getRight() ; // B
+
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CAP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+	assertEquals( right.getOperator(), SQUARE_CAP ) ;
+	assertTrue( leftLeft.isAtomic() ) ;
+	assertEquals( leftLeft.getName(), "A" ) ;
+	assertTrue( rightLeft.isAtomic() ) ;
+	assertEquals( rightLeft.getName(), "A" ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getQuantifier(), EXISTS ) ;
+	assertEquals( leftRight.getRoleName(), "R" ) ;
+	assertTrue( leftRight.getFillerExpr().equals( ExprFactory.prototype.create( "(C " + SQUARE_CAP + "D)" ) ) ) ;
+	assertTrue( rightRight.isAtomic() ) ;
+	assertEquals( rightRight.getName(), "B" ) ;
+}
+
+function test26() 
+{
+	// Test expression ((A and A) or (exists R.(C and D) and (B or C)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (" + EXISTS + "R.(C " + SQUARE_CAP + "D)" + SQUARE_CAP + "(B " + SQUARE_CUP + "C)))" ) ;
+	var left = expr.getLeft() ; // (A and A)
+	var right = expr.getRight() ; // (exists R.(C and D) and (B or C))
+	var leftLeft = left.getLeft() ; // A
+	var rightLeft = left.getRight() ; // A
+	var leftRight = right.getLeft() ; // exists R.(C and D)
+	var rightRight = right.getRight() ; // (B or C)
+	var leftRightRight = rightRight.getLeft() ; // B
+	var rightRightRight = rightRight.getRight() ; // C
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CAP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+	assertEquals( right.getOperator(), SQUARE_CAP ) ;
+	assertTrue( leftLeft.isAtomic() ) ;
+	assertEquals( leftLeft.getName(), "A" ) ;
+	assertTrue( rightLeft.isAtomic() ) ;
+	assertEquals( rightLeft.getName(), "A" ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getQuantifier(), EXISTS ) ;
+	assertEquals( leftRight.getRoleName(), "R" ) ;
+	assertTrue( leftRight.getFillerExpr().equals( ExprFactory.prototype.create( "(C " + SQUARE_CAP + "D)" ) ) ) ;
+	assertTrue( rightRight.isValid() ) ;
+	assertTrue( rightRight.isComplex() ) ;
+	assertEquals( rightRight.getOperator(), SQUARE_CUP ) ;
+	assertTrue( leftRightRight.isValid() ) ;
+	assertTrue( leftRightRight.isAtomic() ) ;
+	assertEquals( leftRightRight.getName(), "B" ) ;
+	assertTrue( rightRightRight.isValid() ) ;
+	assertTrue( rightRightRight.isAtomic() ) ;
+	assertEquals( rightRightRight.getName(), "C" ) ;
+}
+
+function test27() 
+{
+	// Test expression ((A and A) or (A and exists R.(C and D)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + " (A" + SQUARE_CAP + EXISTS + "R.(C " + SQUARE_CAP + "D)))" ) ;
+	var left = expr.getLeft() ; // (A and A) 
+	var right = expr.getRight() ; // (A and exists R.(C and D))
+	var leftLeft = left.getLeft() ; // A
+	var rightLeft = left.getRight() ; // A
+	var leftRight = right.getLeft() ; // A
+	var rightRight = right.getRight() ; // exists R.(C and D)
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CAP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+	assertEquals( right.getOperator(), SQUARE_CAP ) ;
+	assertTrue( leftLeft.isAtomic() ) ;
+	assertEquals( leftLeft.getName(), "A" ) ;
+	assertTrue( rightLeft.isAtomic() ) ;
+	assertEquals( rightLeft.getName(), "A" ) ;
+	assertTrue( leftRight.isValid() ) ;
+	assertTrue( leftRight.isAtomic() ) ;
+	assertEquals( leftRight.getName(), "A" ) ;
+	assertTrue( rightRight.isValid() ) ;
+	assertTrue( rightRight.isRestriction() ) ;
+	assertEquals( rightRight.getQuantifier(), EXISTS ) ;
+	assertEquals( rightRight.getRoleName(), "R" ) ;
+	assertTrue( rightRight.getFillerExpr().equals( ExprFactory.prototype.create( "(C " + SQUARE_CAP + "D)" ) ) ) ;
+}
+
+function test28() 
+{
+	// Test expression ((A and A) or ((A or B) and exists R.(C and D)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "((A" + SQUARE_CUP + "B)" + SQUARE_CAP + EXISTS + "R.(C " + SQUARE_CAP + "D)))" ) ;
+	var left = expr.getLeft() ; // (A and A)
+	var right = expr.getRight() ; // ((A or B) and exists R.(C and D))
+	var leftLeft = left.getLeft() ; // A
+	var rightLeft = left.getRight() ; // A
+	var leftRight = right.getLeft() ; // (A or B)
+	var rightRight = right.getRight() ; // exists R.(C and D)
+	var leftRightLeft = leftRight.getLeft() ; // A
+	var rightRightLeft = leftRight.getRight(); // B
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertEquals( expr.getOperator(), SQUARE_CUP ) ;
+	assertTrue( left.isValid() ) ;
+	assertTrue( left.isComplex() ) ;
+	assertEquals( left.getOperator(), SQUARE_CAP ) ;
+	assertTrue( right.isValid() ) ;
+	assertTrue( right.isComplex() ) ;
+	assertEquals( right.getOperator(), SQUARE_CAP ) ;
+	assertTrue( leftLeft.isAtomic() ) ;
+	assertEquals( leftLeft.getName(), "A" ) ;
+	assertTrue( rightLeft.isAtomic() ) ;
+	assertEquals( rightLeft.getName(), "A" ) ;
+	assertTrue( leftRight.isValid() ) ;
+	assertTrue( leftRight.isComplex() ) ;
+	assertTrue( leftRightLeft.isValid() ) ;
+	assertTrue( leftRightLeft.isAtomic() ) ;
+	assertEquals( leftRightLeft.getName(), "A" ) ;
+	assertTrue( rightRightLeft.isValid() ) ;
+	assertTrue( rightRightLeft.isAtomic() ) ;
+	assertEquals( rightRightLeft.getName(), "B" ) ;
+	assertTrue( rightRight.isValid() ) ;
+	assertTrue( rightRight.isRestriction() ) ;
+	assertEquals( rightRight.getQuantifier(), EXISTS ) ;
+	assertEquals( rightRight.getRoleName(), "R" ) ;
+	assertTrue( rightRight.getFillerExpr().equals( ExprFactory.prototype.create( "(C " + SQUARE_CAP + "D)" ) ) ) ;
+}
+
+function test29() 
+{
+	// Test expression ((A and A) or ((A or B) and exists hasChild.(C and D)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "((A" + SQUARE_CUP + "B)" + SQUARE_CAP + EXISTS + "hasChild.(C " + SQUARE_CAP + "D)))" ) ;
+	var right = expr.getRight() ;
+	var rightRight = right.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( rightRight.isRestriction() ) ;
+	assertEquals( rightRight.getRoleName(), "hasChild" ) ;
+}
+
+function test30() 
+{
+	// Test expression ((A and A) or (exists hasChild.(C and D) and (A or B)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "(" + EXISTS + "hasChild.(C " + SQUARE_CAP + "D)" + SQUARE_CAP + "(A" + SQUARE_CUP + "B)))" ) ;
+	var right = expr.getRight() ;
+	var leftRight = right.getLeft() ;
+
+	assertTrue( expr.isValid() ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getRoleName(), "hasChild" ) ;
+}
+
+function test31() 
+{
+	// Test expression ((A and A) or (exists hasChild.C and (A or B)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "(" + EXISTS + "hasChild.C" + SQUARE_CAP + "(A" + SQUARE_CUP + "B)))" ) ;
+	var right = expr.getRight() ;
+	var leftRight = right.getLeft() ;
+
+	assertTrue( expr.isValid() ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getRoleName(), "hasChild" ) ;
+}
+
+function test32() 
+{
+	// Test expression ((A and A) or ((A or B) and exists hasChild.D))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "((A" + SQUARE_CUP + "B)" + SQUARE_CAP + EXISTS + "hasChild.D))" ) ;
+	var right = expr.getRight() ;
+	var rightRight = right.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( rightRight.isRestriction() ) ;
+	assertEquals( rightRight.getRoleName(), "hasChild" ) ;
+}
+
+function test33() 
+{
+	// Test expression ((A and A) or (exists hasChild.Student and (A or B)))
+	var expr = ExprFactory.prototype.create( "((A " + SQUARE_CAP + " A) " + SQUARE_CUP + "(" + EXISTS + "hasChild.Student" + SQUARE_CAP + "(A" + SQUARE_CUP + "B)))" ) ;
+	var right = expr.getRight() ;
+	var leftRight = right.getLeft() ;
+
+	assertTrue( expr.isValid() ) ;
+	assertTrue( leftRight.isRestriction() ) ;
+	assertEquals( leftRight.getRoleName(), "hasChild" ) ;
+	assertTrue( leftRight.getFillerExpr().equals( ExprFactory.prototype.create( "Student" ) ) ) ;
+}
+
+function test34() 
+{
+	// Test expression (exists R.(forAll S.D))
+	var expr = ExprFactory.prototype.create( "(" + EXISTS + "R.(" + FOR_ALL + "S.D))" ) ;
+	var fillerExpr = expr.getFillerExpr() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isRestriction() ) ;
+	assertEquals( expr.getQuantifier(), EXISTS ) ;
+	assertTrue( fillerExpr.isValid() ) ;
+	assertTrue( fillerExpr.isRestriction() ) ;
+	assertEquals( fillerExpr.getQuantifier(), FOR_ALL ) ;
+	assertEquals( fillerExpr.getRoleName(), "S" ) ;
+	assertTrue( fillerExpr.getFillerExpr().equals( new ExprAtomic( "D" ) ) ) ;
+}
+
+function test35() 
+{
+	// Test expression ((A and B) or exists hasChild.(A or forAll STUDENT.D))
+	var expr = ExprFactory.prototype.create( "((A" + SQUARE_CAP + "B)" + SQUARE_CUP + EXISTS + "hasChild.(A" + SQUARE_CUP + FOR_ALL + "STUDENT.D))" ) ;
+	var left = expr.getLeft() ; // (A and B) 
+	var right = expr.getRight() ; // exists hasChild.(A or forAll S.D)
+	var rightFiller = right.getFillerExpr() ;
+	var leftRightFiller = rightFiller.getLeft() ;
+	var rightRightFiller = rightFiller.getRight() ;
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertTrue( rightFiller.isComplex() ) ;
+	assertEquals( rightFiller.getOperator(), SQUARE_CUP ) ;
+	assertTrue( leftRightFiller.isAtomic() ) ;
+	assertEquals( leftRightFiller.getName(), "A" ) ;
+	assertEquals( rightRightFiller.getQuantifier(), FOR_ALL ) ;
+	assertEquals( rightRightFiller.getRoleName(), "STUDENT" ) ;
+	assertTrue( rightRightFiller.getFillerExpr().equals( new ExprAtomic( "D" ) ) ) ;
+}
+
+function test36() 
+{
+	// Test expression (forAll R.C or exists S.D)
+	var expr = ExprFactory.prototype.create( "(" + FOR_ALL + "R.C" + SQUARE_CUP + EXISTS + "S.D)" ) ;
+	var left = expr.getLeft() ; // forAll R.C 
+	var right = expr.getRight() ; // exists S.D
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( left.isRestriction() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertEquals( left.getRoleName(), "R" ) ;
+	assertEquals( right.getRoleName(), "S" ) ;
+}
+
+function test37() 
+{
+	// Test expression (((A and B) and (C and D)) or exists S.D)
+	var expr = ExprFactory.prototype.create( "(((A" + SQUARE_CAP + "B)" + SQUARE_CAP + "(C" + SQUARE_CAP + "D))" + SQUARE_CUP + EXISTS + "S.D)" ) ;
+	var left = expr.getLeft() ; // ((A and B) and (C and D)) 
+	var right = expr.getRight() ; // exists S.D
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertEquals( right.getRoleName(), "S" ) ;
+}
+
+function test38() 
+{
+	// Test expression ((C and D) or exists S.D)
+	var expr = ExprFactory.prototype.create( "((C" + SQUARE_CAP + "D)" + SQUARE_CUP + EXISTS + "S.D)" ) ;
+	var left = expr.getLeft() ; // (C and D)
+	var right = expr.getRight() ; // exists S.D
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertEquals( right.getRoleName(), "S" ) ;
+}
+
+function test39() 
+{
+	// Test expression (Student or exists S.D)
+	var expr = ExprFactory.prototype.create( "(Student" + SQUARE_CUP + EXISTS + "S.D)" ) ;
+	var left = expr.getLeft() ; // Student
+	var right = expr.getRight() ; // exists S.D
+	
+	assertTrue( expr.isValid() ) ;
+	assertTrue( expr.isComplex() ) ;
+	assertTrue( right.isRestriction() ) ;
+	assertEquals( right.getRoleName(), "S" ) ;
+}
+
+</script>
+
+<body>
+<h1>Test for src/expr/ExprFactory.js</h1>
+</body>
+</html>

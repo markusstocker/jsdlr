@@ -1,0 +1,96 @@
+<!--
+The MIT License
+
+Copyright (c) 2007 Markus Stocker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>A JavaScript ALC Tableau Reasoner</title>
+<script src="src/util/Lang.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/util/DecimalCharCodeTable.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/GUI.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/expr/Expr.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/expr/ExprAtomic.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/expr/ExprComplex.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/expr/ExprRestriction.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/expr/ExprFactory.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/ABox.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/Assertion.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/AssertionConcept.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/AssertionRole.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/Concept.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/Individual.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/kb/Role.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/tableau/Tableau.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/tableau/Node.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/reasoner/Reasoner.js" language="JavaScript" type="text/javascript"></script>
+<script src="src/reasoner/ALCReasoner.js" language="JavaScript" type="text/javascript"></script>
+<link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+<h3>A JavaScript ALC Tableau Reasoner (pre-alpha)</h3>
+<div>
+Please note:
+<ul>
+	<li>Expressions are required to have pairs for sub-expressions enclosed by parenthesis. Hence, ((A &#8851; B) &#8851; C) is OK, but (A &#8851; B &#8851; C) will be interpreted as invalid.</li>
+	<li>You can type concept names and parenthesis in the input field and either append it to the expression or select a radio button to append an operator.</li>
+	<li>The reasoning task supported is concept satisfiability (for now).</li>
+	<li>The input field may be used to build expressions. Reasoning tasks are performed on the <b>bold</b> expression displayed below the input field. Click on Reset to provide a new expression.</li>
+	<li>Tested and implemented with Firefox 2.0.0.3. Some things probably won't work in IE or other browsers!</li>
+</ul>
+</div>
+
+<h5>Type your expression</h5>
+<form id="form">
+<input type="text" name="cmd" id="cmd">
+&nbsp;&nbsp;<a href="#" onclick="append()">Append</a>
+&nbsp;&nbsp;<a href="#" onclick="reset()">Reset</a>
+<br/>
+<input type="radio" name="symb" value="and" onclick="append()">&#8851;
+<input type="radio" name="symb" value="or" onclick="append()">&#8852;
+<input type="radio" name="symb" value="forall" onclick="append()">&#8704;
+<input type="radio" name="symb" value="exists" onclick="append()">&#8707;
+<input type="radio" name="symb" value="neg" onclick="append()">&#172;
+<input type="radio" name="symb" value="sub" onclick="append()">&#8849;
+<!--
+<input type="radio" name="symb" value="top" onclick="append()">&#8868;
+<input type="radio" name="symb" value="bot" onclick="append()">&#8869;
+-->
+</form>
+<p>Examples: 
+<a href="#" onclick="example1()">Example1</a>&nbsp;
+<a href="#" onclick="example2()">Example2</a>&nbsp;
+<a href="#" onclick="example3()">Example3</a>&nbsp;
+<a href="#" onclick="example4()">Example4</a>&nbsp;
+</p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td>Expression:&nbsp;</td><td><div id="expr" class="expr"></div></td></tr>
+</table>
+<br/>
+<a href="#" onclick="checkSatisfiability()">Check Satisfiability</a>
+&nbsp;
+<a href="#" onclick="checkSubsumption()">Check Subsumption</a>
+<br/><br/>
+<div id="msg"></div>
+</div>
+</body>
+</html>
